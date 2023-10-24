@@ -34,36 +34,58 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public ResponseEntity<List<Book>> getAllBooks() {
+        try {
+            return ResponseEntity.ok(bookRepository.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public Book getBookById( @PathVariable  Long id) {
-        return bookRepository.findById(id).orElse(null);
+    public ResponseEntity<Book> getBookById( @PathVariable  Long id) {
+        try {
+            Book book = bookRepository.findById(id).orElse(null);
+            if (book == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(book);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @PostMapping
-    public ResponseEntity<String> saveBook(@RequestBody BookRequest bookRequest) {
+    public ResponseEntity<Book> saveBook(@RequestBody BookRequest bookRequest) {
 
-        // Find author by authorId
-        Author author = authorRepository.findById(bookRequest.getAuthorId()).orElse(null);
-        if (author == null) {
-            return ResponseEntity.badRequest().body("Author not found");
+        try{
+            // Find author by authorId
+            Author author = authorRepository.findById(bookRequest.getAuthorId()).orElse(null);
+            if (author == null) {
+                return ResponseEntity.notFound().build();
+            }
+    
+            
+            Book book = new Book();
+            book.setTitle(bookRequest.getTitle());
+            book.setAuthor(author);
+    
+            book = bookRepository.save(book);
+            return ResponseEntity.ok(book);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
-
-        
-        Book book = new Book();
-        book.setTitle(bookRequest.getTitle());
-        book.setAuthor(author);
-
-        book = bookRepository.save(book);
-        return ResponseEntity.ok().body(book.getIsbn().toString());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id) {
-        bookRepository.deleteById(id);
+    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return ResponseEntity.ok("Book with ID " + id + " has been deleted.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

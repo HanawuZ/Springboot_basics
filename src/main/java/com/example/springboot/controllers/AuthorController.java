@@ -1,4 +1,5 @@
 package com.example.springboot.controllers;
+
 import com.example.springboot.models.Author;
 import com.example.springboot.repositories.AuthorRepository;
 import java.util.List;
@@ -16,26 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
-    
+
     @Autowired
     private final AuthorRepository authorRepository;
 
-    
     public AuthorController(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
     @GetMapping
-    public  ResponseEntity<List<Author>> getAllAuthors() {
+    public ResponseEntity<List<Author>> getAllAuthors() {
         try {
             return ResponseEntity.ok(authorRepository.findAll());
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
-        }   
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthorById( @PathVariable  Long id) {
+    public ResponseEntity<Author> getAuthorById(@PathVariable Long id) {
         Author author = authorRepository.findById(id).orElse(null);
         if (author == null) {
             return ResponseEntity.notFound().build();
@@ -44,7 +44,7 @@ public class AuthorController {
         return ResponseEntity.ok(author);
     }
 
-     @PostMapping
+    @PostMapping
     public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
         try {
             Author savedAuthor = authorRepository.save(author);
@@ -56,12 +56,12 @@ public class AuthorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAuthor(@PathVariable Long id) {
-    if (authorRepository.existsById(id)) {
-        authorRepository.deleteById(id);
-        return ResponseEntity.ok("Author with ID " + id + " has been deleted.");
-    } else {
-        return ResponseEntity.notFound().build();
+        if (authorRepository.existsById(id)) {
+            authorRepository.deleteById(id);
+            return ResponseEntity.ok("Author with ID " + id + " has been deleted.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-}
 
 }
