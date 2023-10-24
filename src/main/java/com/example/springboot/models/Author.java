@@ -6,50 +6,42 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
+import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 
 @Entity
+@Data
 public class Author {
+    /*
+     First Name
+    Last Name
+    Date of Birth
+    Nationality
+    */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dob;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Book> books;
 
-    // Constructors, getters, setters
-    // Getter for id
-    public Long getId() {
-        return id;
-    }
+    public Author() {}
 
-    // Setter for id
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    // Getter for name
-    public String getName() {
-        return name;
-    }
-
-    // Setter for name
-    public void setName(String name) {
+    public Author(String name, LocalDate dob) {
         this.name = name;
+        this.dob = dob;
     }
-
-    // Getter for books
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    // Setter for books
-    public void setBooks(List<Book> books) {
-        this.books = books;
-    }
+    
 }

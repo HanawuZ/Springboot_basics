@@ -4,6 +4,7 @@ import com.example.springboot.repositories.AuthorRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,22 +26,42 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    public  ResponseEntity<List<Author>> getAllAuthors() {
+        try {
+            return ResponseEntity.ok(authorRepository.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }   
     }
 
     @GetMapping("/{id}")
-    public Author getAuthorById( @PathVariable  Long id) {
-        return authorRepository.findById(id).orElse(null);
+    public ResponseEntity<Author> getAuthorById( @PathVariable  Long id) {
+        Author author = authorRepository.findById(id).orElse(null);
+        if (author == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(author);
     }
 
      @PostMapping
-    public Author saveAuthor(@RequestBody Author author) {
-        return authorRepository.save(author);
+    public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
+        try {
+            Author savedAuthor = authorRepository.save(author);
+            return ResponseEntity.ok(savedAuthor);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-     @DeleteMapping("/{id}")
-    public void deleteAuthor(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAuthor(@PathVariable Long id) {
+    if (authorRepository.existsById(id)) {
         authorRepository.deleteById(id);
+        return ResponseEntity.ok("Author with ID " + id + " has been deleted.");
+    } else {
+        return ResponseEntity.notFound().build();
     }
+}
+
 }

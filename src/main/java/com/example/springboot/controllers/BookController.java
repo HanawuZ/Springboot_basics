@@ -58,7 +58,7 @@ public class BookController {
         book.setAuthor(author);
 
         book = bookRepository.save(book);
-        return ResponseEntity.ok().body(book.getId().toString());
+        return ResponseEntity.ok().body(book.getIsbn().toString());
     }
 
     @DeleteMapping("/{id}")
