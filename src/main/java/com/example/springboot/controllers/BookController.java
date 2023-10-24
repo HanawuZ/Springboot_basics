@@ -8,6 +8,8 @@ import com.example.springboot.repositories.BookRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/books")
@@ -43,7 +44,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById( @PathVariable  Long id) {
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         try {
             Book book = bookRepository.findById(id).orElse(null);
             if (book == null) {
@@ -56,24 +57,54 @@ public class BookController {
 
     }
 
-    @PostMapping
-    public ResponseEntity<Book> saveBook(@RequestBody BookRequest bookRequest) {
+    @GetMapping("/author/{id}")
+    public ResponseEntity<List<Book>> getBookByAuthorId(@PathVariable Long id) {
+        try {
+            // todo change to get books by authorID
+            List<Book> books = bookRepository.findBookByAuthorID(id);
+            if (books == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(books);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
-        try{
-            // Find author by authorId
+    /*
+     
+     */
+    @PostMapping
+    public ResponseEntity<Book> addBook(@RequestBody BookRequest bookRequest){
+        // Create a new Book entity
+        try {
+
+            Book newBook = new Book();
+            newBook.setIsbn(bookRequest.getIsbn());
+            newBook.setTitle(bookRequest.getTitle());
+            newBook.setGenre(bookRequest.getGenre());
+            newBook.setPublicationYear(bookRequest.getPublicationYear());
+            System.out.println(bookRequest.getPublicationYear());
+            newBook.setCopiesAvailable(bookRequest.getCopiesAvailable());
+            newBook.setPrice(bookRequest.getPrice());
+    
+            // Retrieve the Author based on the authorId from the request
             Author author = authorRepository.findById(bookRequest.getAuthorId()).orElse(null);
             if (author == null) {
                 return ResponseEntity.notFound().build();
-            }
+            } 
     
+            // Add the Author to the list of authors for the new book
+            newBook.addAuthor(author);
             
-            Book book = new Book();
-            book.setTitle(bookRequest.getTitle());
-            book.setAuthor(author);
     
-            book = bookRepository.save(book);
-            return ResponseEntity.ok(book);
+            // Save the new Book to the database
+            Book savedBook = bookRepository.save(newBook);
+    
+            // Return a ResponseEntity with the added Book
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

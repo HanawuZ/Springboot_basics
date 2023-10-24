@@ -2,11 +2,12 @@ package com.example.springboot.models;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,12 +18,14 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "authors")
 public class Author {
     /*
-     First Name
-    Last Name
-    Date of Birth
-    Nationality
+    JSON Format
+    {
+        "name": "",
+        "dob": ""
+    }
     */
 
     @Id
@@ -33,9 +36,16 @@ public class Author {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @ManyToMany(
+        cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+        },
+        mappedBy = "authors",
+        fetch = FetchType.LAZY
+    )
     @JsonIgnore
-    private List<Book> books;
+    List<Book> book;
 
     public Author() {}
 
@@ -43,5 +53,6 @@ public class Author {
         this.name = name;
         this.dob = dob;
     }
+
     
 }
