@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,38 @@ public class AuthorController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/book/{isbn}")
+    public ResponseEntity<List<Author>> getAuthorByISBN(@PathVariable Long isbn){
+        try {
+            List<Author> authors = authorRepository.findAuthorByISBN(isbn);
+            if (authors == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(authors);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
+        // Find existing author by ID
+        Author existingAuthor = authorRepository.findById(id).orElse(null);
+        if (existingAuthor == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Update existing author
+        existingAuthor.setName(author.getName());
+        existingAuthor.setDob(author.getDob());
+        authorRepository.save(existingAuthor);
+        return ResponseEntity.ok(existingAuthor);
+    
     }
 
     @DeleteMapping("/{id}")

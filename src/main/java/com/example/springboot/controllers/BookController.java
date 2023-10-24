@@ -87,16 +87,16 @@ public class BookController {
             System.out.println(bookRequest.getPublicationYear());
             newBook.setCopiesAvailable(bookRequest.getCopiesAvailable());
             newBook.setPrice(bookRequest.getPrice());
-    
-            // Retrieve the Author based on the authorId from the request
-            Author author = authorRepository.findById(bookRequest.getAuthorId()).orElse(null);
-            if (author == null) {
-                return ResponseEntity.notFound().build();
-            } 
-    
-            // Add the Author to the list of authors for the new book
-            newBook.addAuthor(author);
             
+    
+            // Add list of authors for the new book
+            for (int i = 0 ; i < bookRequest.getAuthorId().size() ; i++){
+                Author author = authorRepository.findById(bookRequest.getAuthorId().get(i)).orElse(null);
+                if (author == null) {
+                    return ResponseEntity.notFound().build();
+                } 
+                newBook.addAuthor(author);
+            }
     
             // Save the new Book to the database
             Book savedBook = bookRepository.save(newBook);

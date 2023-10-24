@@ -1,7 +1,6 @@
 package com.example.springboot.models;
 import java.time.LocalDate;
-
-import org.springframework.cglib.core.Local;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +20,7 @@ public class BookRequest {
     private String genre;
     
     @JsonProperty("authorId")
-    private Long authorId;
+    private List<Long> authorId;
     
     @JsonProperty("publisherId")
     private Long publisherId;
