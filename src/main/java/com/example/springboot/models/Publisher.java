@@ -45,4 +45,13 @@ public class Publisher {
     @OneToMany(mappedBy = "publisher", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Book> book;
+
+    public Publisher(){}
+    public Publisher(String publisherName, String address, String phoneNumber, String email){
+        this.publisherName = publisherName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        
+    }
 }

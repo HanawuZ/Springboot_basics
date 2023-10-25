@@ -3,14 +3,17 @@ package com.example.springboot.controllers;
 import com.example.springboot.models.Author;
 import com.example.springboot.models.Book;
 import com.example.springboot.models.BookRequest;
+import com.example.springboot.models.Publisher;
 import com.example.springboot.repositories.AuthorRepository;
 import com.example.springboot.repositories.BookRepository;
+import com.example.springboot.repositories.PublisherRepository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/books")
 public class BookController {
 
@@ -29,9 +33,13 @@ public class BookController {
     @Autowired
     private final AuthorRepository authorRepository;
 
-    public BookController(BookRepository bookRepository, AuthorRepository authorRepository) {
+    @Autowired
+    private final PublisherRepository publisherRepository;
+
+    public BookController(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @GetMapping
@@ -97,7 +105,14 @@ public class BookController {
                 } 
                 newBook.addAuthor(author);
             }
-    
+
+            Publisher publisher = publisherRepository.findById(bookRequest.getPublisherId()).orElse(null);
+            if (publisher == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            newBook.setPublisher(publisher);
+            
             // Save the new Book to the database
             Book savedBook = bookRepository.save(newBook);
     
