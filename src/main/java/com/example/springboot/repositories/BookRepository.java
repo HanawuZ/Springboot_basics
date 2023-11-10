@@ -6,21 +6,19 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.springboot.models.Book;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, String> {
 
     @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.id = :authorId")
     List<Book> findBookByAuthorID(Long authorId);
 
     // Select books by ISBN
-    // @Query("SELECT b FROM Book b WHERE b.isbn = :isbn")
-    Book findBookByISBN(String isbn);
+    @Query("SELECT b FROM Book b WHERE b.Isbn = :Isbn")
+    Book findBookByISBN(String Isbn);
 
     // Delete book by ISBN
-    // @Transactional
-    // @Modifying
-    // @Query("DELETE FROM Book b WHERE b.isbn = :isbn")
-    // void deleteBookByISBN(String isbn);
+    @Query("DELETE FROM Book b WHERE b.Isbn = :Isbn")
+    @Modifying
+    void deleteBookByISBN(String Isbn);
 }

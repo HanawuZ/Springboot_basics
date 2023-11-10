@@ -53,20 +53,20 @@ public class DataInitializer implements CommandLineRunner{
         // Create sample books
         List<Book> books = new ArrayList<>();
 
-        books.add(new Book(Long.parseLong("9781234567890"), "Book Title 1", "Fiction", LocalDate.parse("2021-01-15"), 50, 19.99));
+        books.add(new Book("9781234567890", "Book Title 1", "Fiction", LocalDate.parse("2021-01-15"), 50, 19.99));
         books.get(0).addAuthor(authors.get(0));
         books.get(0).addAuthor(authors.get(1));
         books.get(0).setPublisher(publisher1);
 
-        books.add(new Book(Long.parseLong("9782345678901"), "Book Title 2", "Mystery", LocalDate.parse("2019-07-20"), 30, 15.99));
+        books.add(new Book("9782345678901", "Book Title 2", "Mystery", LocalDate.parse("2019-07-20"), 30, 15.99));
         books.get(1).addAuthor(authors.get(2));
         books.get(1).setPublisher(publisher1);
 
-        books.add(new Book(Long.parseLong("9783456789012"), "Book Title 3", "Science Fiction", LocalDate.parse("2020-05-10"), 40, 14.99));
+        books.add(new Book("9783456789012", "Book Title 3", "Science Fiction", LocalDate.parse("2020-05-10"), 40, 14.99));
         books.get(2).addAuthor(authors.get(3));
         books.get(2).setPublisher(publisher2);
 
-        books.add(new Book(Long.parseLong("9784567890123"), "Book Title 4", "Romance", LocalDate.parse("2018-11-30"), 20, 12.99));
+        books.add(new Book("9784567890123", "Book Title 4", "Romance", LocalDate.parse("2018-11-30"), 20, 12.99));
         books.get(3).addAuthor(authors.get(4));
         books.get(3).setPublisher(publisher2);
 

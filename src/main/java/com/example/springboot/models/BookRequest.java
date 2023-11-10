@@ -11,7 +11,7 @@ import lombok.Data;
 public class BookRequest {
     
     @JsonProperty("isbn")
-    private Long Isbn;
+    private String Isbn;
     
     @JsonProperty("title")
     private String title;

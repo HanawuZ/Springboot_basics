@@ -35,7 +35,7 @@ public class Book {
      }
      */
     @Id
-    private Long Isbn;
+    private String Isbn;
 
     private String title;
 
@@ -62,7 +62,7 @@ public class Book {
 
     public Book() {}
 
-    public Book(Long Isbn, String title, String genre, LocalDate publicationYear, int copiesAvailable, double price) {
+    public Book(String Isbn, String title, String genre, LocalDate publicationYear, int copiesAvailable, double price) {
         this.Isbn = Isbn;
         this.title = title;
         this.genre = genre;
