@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/publishers")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin
 
 @RestController
 public class PublisherController {

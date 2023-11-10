@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin
 @RequestMapping("/books")
 public class BookController {
 
@@ -50,10 +50,10 @@ public class BookController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+    @GetMapping("/{isbn}")
+    public ResponseEntity<Book> getBookByIsbn(@PathVariable String isbn) {
         try {
-            Book book = bookRepository.findById(id).orElse(null);
+            Book book = bookRepository.findBookByISBN(isbn);
             if (book == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -88,12 +88,21 @@ public class BookController {
 
             Book newBook = new Book();
             newBook.setIsbn(bookRequest.getIsbn());
-            newBook.setTitle(bookRequest.getTitle());
-            newBook.setGenre(bookRequest.getGenre());
+            System.out.println(bookRequest.getIsbn());
+            newBook.setTitle(bookRequest.getTitle());            
+            System.out.println(bookRequest.getTitle());
+            newBook.setGenre(bookRequest.getGenre());            
+            System.out.println(bookRequest.getGenre());
+
             newBook.setPublicationYear(bookRequest.getPublicationYear());
             System.out.println(bookRequest.getPublicationYear());
-            newBook.setCopiesAvailable(bookRequest.getCopiesAvailable());
-            newBook.setPrice(bookRequest.getPrice());
+            newBook.setCopiesAvailable(bookRequest.getCopiesAvailable());            
+            System.out.println(bookRequest.getCopiesAvailable());
+
+            newBook.setPrice(bookRequest.getPrice());            
+            System.out.println(bookRequest.getPrice());
+
+            System.out.println(bookRequest.getAuthorId());
             
     
             // Add list of authors for the new book
@@ -123,14 +132,18 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return ResponseEntity.ok("Book with ID " + id + " has been deleted.");
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/{isbn}")
+    public ResponseEntity<Book> deleteBook(@PathVariable String isbn) {
+        try {
+            Book book = bookRepository.findBookByISBN(isbn);
+            if (book == null) {
+                return ResponseEntity.notFound().build();
+            }
+            bookRepository.delete(book);
+            return ResponseEntity.ok(book);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
-
 }
