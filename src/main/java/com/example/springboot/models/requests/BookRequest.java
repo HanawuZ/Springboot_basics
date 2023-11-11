@@ -1,4 +1,4 @@
-package com.example.springboot.models;
+package com.example.springboot.models.requests;
 import java.time.LocalDate;
 import java.util.List;
 

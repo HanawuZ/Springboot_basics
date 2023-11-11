@@ -2,8 +2,8 @@ package com.example.springboot.controllers;
 
 import com.example.springboot.models.Author;
 import com.example.springboot.models.Book;
-import com.example.springboot.models.BookRequest;
 import com.example.springboot.models.Publisher;
+import com.example.springboot.models.requests.BookRequest;
 import com.example.springboot.repositories.AuthorRepository;
 import com.example.springboot.repositories.BookRepository;
 import com.example.springboot.repositories.PublisherRepository;
