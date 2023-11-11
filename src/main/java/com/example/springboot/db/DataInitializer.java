@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.example.springboot.models.Admin;
 import com.example.springboot.models.Author;
 import com.example.springboot.models.Book;
 import com.example.springboot.models.Publisher;
+import com.example.springboot.repositories.AdminRepository;
 import com.example.springboot.repositories.AuthorRepository;
 import com.example.springboot.repositories.BookRepository;
 import com.example.springboot.repositories.PublisherRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,12 @@ public class DataInitializer implements CommandLineRunner{
 
     @Autowired
     private PublisherRepository publisherRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AdminRepository AdminRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -71,5 +80,22 @@ public class DataInitializer implements CommandLineRunner{
         books.get(3).setPublisher(publisher2);
 
         bookRepository.saveAll(books);
+
+        // Create sample admins
+        Admin admin1 = new Admin(
+            "Admin",
+            "One",
+            "example1@gmail.com",
+            passwordEncoder.encode("password1")
+        );
+
+        Admin admin2 = new Admin(
+            "Admin",
+            "One",
+            "example1@gmail.com",
+            passwordEncoder.encode("123456")
+        );
+
+        AdminRepository.saveAll(List.of(admin1, admin2));
     }
 }
