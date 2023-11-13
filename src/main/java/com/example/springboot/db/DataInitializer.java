@@ -80,6 +80,15 @@ public class DataInitializer implements CommandLineRunner{
 
         // bookRepository.saveAll(books);
 
+        // Create sample users
+        User user1 = new User(
+            "user1",
+            "John",
+            "Doe",
+            "ex@gmail.com",
+            "123456",
+            "admin"
+        );
 
     
     }
