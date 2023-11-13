@@ -34,6 +34,9 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) throws JsonProcessingException {
+        System.out.println(signupRequest.getEmail());        
+        System.out.println(signupRequest.getLastName());
+
         userService.signup(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("user successfully signed up");
     }

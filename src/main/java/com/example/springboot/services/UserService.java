@@ -25,6 +25,7 @@ public class UserService {
 
     public ResponseEntity<String> signup(SignupRequest signupRequest) {
         User user = new User();
+        user.setUsername(signupRequest.getUsername());
         user.setFirstName(signupRequest.getFirstName());
         user.setLastName(signupRequest.getLastName());
         user.setEmail(signupRequest.getEmail());

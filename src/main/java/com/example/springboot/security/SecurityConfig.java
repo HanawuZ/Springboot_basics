@@ -33,7 +33,7 @@ public class SecurityConfig {
         ).sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ).authorizeHttpRequests(authorize ->
-                authorize.requestMatchers("/signup").permitAll()
+                authorize.requestMatchers("/admin/signup").permitAll()
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
 
