@@ -32,10 +32,19 @@ public class SecurityConfig {
                 csrf.disable()
         ).sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        ).authorizeHttpRequests(authorize ->
-                authorize.requestMatchers("/admin/signup").permitAll()
+        ).authorizeHttpRequests(authorize -> 
+        
+                authorize.requestMatchers("/h2-console/**").permitAll()
+                
+                        // Permit all requests to the /admin/signup endpoint
+                        .requestMatchers("/admin/signup").permitAll()                        
+                        .requestMatchers("/admin/authenticated").permitAll()
+
+
+
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
+
 
         return httpSecurity.build();
     }

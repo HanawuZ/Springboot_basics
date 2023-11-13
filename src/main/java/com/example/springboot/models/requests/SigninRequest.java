@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class SigninRequest {
 
-    @JsonProperty("userId")
-    private String userId;
+    @JsonProperty("username")
+    private String username;
 
     @JsonProperty("password")
     private String password;

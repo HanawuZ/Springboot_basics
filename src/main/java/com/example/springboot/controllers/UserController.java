@@ -41,6 +41,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body("user successfully signed up");
     }
 
+    // @PostMapping("/signin")
+    // public ResponseEntity<?> signin(@RequestBody User user) throws JsonProcessingException {
+    //     return userService.signin(user);
+    // }
+
     @GetMapping("/authenticated")
     public ResponseEntity<String> authenticated() throws JsonProcessingException {
         String responseMessage = "This API is accessed by only authenticated users";
