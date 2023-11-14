@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.springboot.auth.JwtUtil;
 import com.example.springboot.models.User;
 import com.example.springboot.models.requests.SigninRequest;
 import com.example.springboot.models.requests.SignupRequest;
@@ -26,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.example.springboot.auth.JwtUtil;
 
 @RestController
 @CrossOrigin
@@ -40,9 +40,9 @@ public class UserController {
 
     @Autowired
     public UserRepository userRepository;
-    
+
     @Autowired
-    public JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     public UserController(UserService userService, AuthenticationManager authenticationManager, UserRepository userRepository, JwtUtil jwtUtil) {
         this.userService = userService;
@@ -91,7 +91,7 @@ public class UserController {
 
             String token = jwtUtil.createToken(user);
 
-            SigninResponse signinResponse = new SigninResponse(user.getUsername(), token);
+            SigninResponse signinResponse = new SigninResponse(user.getUsername(), "");
 
             return ResponseEntity.ok(signinResponse);
 

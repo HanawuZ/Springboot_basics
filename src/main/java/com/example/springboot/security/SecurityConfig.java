@@ -1,4 +1,5 @@
 package com.example.springboot.security;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -17,12 +18,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import com.example.springboot.auth.JwtUtil;
+
 // import com.example.springboot.auth.JwtAuthorizationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder)
@@ -32,6 +36,7 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
