@@ -9,11 +9,11 @@ import com.example.springboot.models.User;
 import com.example.springboot.models.Author;
 import com.example.springboot.models.Book;
 import com.example.springboot.models.Publisher;
-import com.example.springboot.repositories.UserRepository;
+// import com.example.springboot.repositories.UserRepository;
 import com.example.springboot.repositories.AuthorRepository;
-import com.example.springboot.repositories.BookRepository;
-import com.example.springboot.repositories.PublisherRepository;
-import com.example.springboot.services.UserService;
+// import com.example.springboot.repositories.BookRepository;
+// import com.example.springboot.repositories.PublisherRepository;
+// import com.example.springboot.services.UserService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,14 +25,14 @@ public class DataInitializer implements CommandLineRunner{
     @Autowired
     private AuthorRepository authorRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    // @Autowired
+    // private BookRepository bookRepository;
 
-    @Autowired
-    private PublisherRepository publisherRepository;
+    // @Autowired
+    // private PublisherRepository publisherRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,7 +52,7 @@ public class DataInitializer implements CommandLineRunner{
 
         // authorRepository.saveAll(authors);
         
-        // // Create sample publishers
+        // Create sample publishers
         // Publisher publisher1 = new Publisher("Publisher A", "123 Main St", "123-456-7890", "publisherA@example.com");
         // Publisher publisher2 = new Publisher("Publisher B", "456 Elm St", "987-654-3210", "publisherB@example.com");
         
@@ -81,16 +81,16 @@ public class DataInitializer implements CommandLineRunner{
         // bookRepository.saveAll(books);
 
         // Create sample users
-        User user1 = new User(
-            "user1",
-            "John",
-            "Doe",
-            "ex@gmail.com",
-            "123456",
-            "admin"
-        );
+        // User user1 = new User(
+        //     "user1",
+        //     "John",
+        //     "Doe",
+        //     "ex@gmail.com",
+        //     "123456",
+        //     "admin"
+        // );
 
-        userRepository.save(user1);
+        // userRepository.save(user1);
 
     
     }
