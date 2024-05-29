@@ -32,7 +32,7 @@ public class DataInitializer implements CommandLineRunner{
     private PublisherRepository publisherRepository;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -89,6 +89,8 @@ public class DataInitializer implements CommandLineRunner{
             "123456",
             "admin"
         );
+
+        userRepository.save(user1);
 
     
     }
