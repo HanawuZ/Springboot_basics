@@ -1,6 +1,7 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.models.Author;
+import com.example.springboot.models.requests.AuthorRequest;
 import com.example.springboot.repositories.AuthorRepository;
 import com.example.springboot.services.AuthorService;
 
@@ -29,10 +30,9 @@ import com.example.springboot.lib.http.StatusCode;
 interface IAuthorController {
     ResponseEntity<BaseResponse> getAllAuthors();
     ResponseEntity<BaseResponse> getAuthorById(String id);
-    // Author saveAuthor(Author author);
-    // Author deleteAuthorById(Long id);
-    // Author updateAuthorById(Long id, Author author);
-    
+    ResponseEntity<BaseResponse> createAuthor(AuthorRequest authorRequest);
+    ResponseEntity<BaseResponse> deleteAuthor(String id);
+    ResponseEntity<BaseResponse> updateAuthor(String id, AuthorRequest authorRequest);    
 }
 
 @CrossOrigin
@@ -73,16 +73,80 @@ public class AuthorController implements IAuthorController {
         }
     }
 
-    // @PostMapping
-    // public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
-    //     try {
-    //         Author savedAuthor = authorRepository.save(author);
-    //         return ResponseEntity.ok(savedAuthor);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().build();
-    //     }
-    // }
+    @PostMapping
+    public  ResponseEntity<BaseResponse> createAuthor(@RequestBody AuthorRequest authorRequest) {
+        try {
+            // If field is empty
+            if (authorRequest == null) {
+                return BaseResponse.BadRequest(null, "Author request cannot be empty", null);
+            }
 
+            // If firstname is empty
+            if (authorRequest.getFirstname() == null || authorRequest.getFirstname().isEmpty() || authorRequest.getFirstname() == "") {
+                return BaseResponse.BadRequest(null, "Author firstname cannot be empty", null);
+            }
+
+            if (authorRequest.getLastname() == null || authorRequest.getLastname().isEmpty() || authorRequest.getLastname() == "") {
+                return BaseResponse.BadRequest(null, "Author lastname cannot be empty", null);
+            }
+
+            // If dob is empty
+            if (authorRequest.getDob() == null) {
+                return BaseResponse.BadRequest(null, "Author date of birth cannot be empty", null);
+            }
+
+            Optional<Author> savedAuthor = authorService.createAuthor(authorRequest);
+            if (!savedAuthor.isPresent()) {
+                return BaseResponse.BadRequest(null, "Cannot create author", null);
+            }
+            return BaseResponse.Created("Author is created", null, savedAuthor);
+        } catch (Exception e) {
+            return BaseResponse.InternalServerError(null, e.getMessage(), null);
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<BaseResponse> updateAuthor(@RequestParam(name = "id") String id, @RequestBody AuthorRequest authorRequest) {
+        try {
+            if (authorRequest == null) {
+                return BaseResponse.BadRequest(null, "Author request cannot be empty", null);
+            }
+
+            if (id == null || id.isEmpty() || id == "") {
+                return BaseResponse.BadRequest(null, "Author ID cannot be empty", null);
+            }
+
+            Optional<Author> updatedAuthor = authorService.updateAuthor(id, authorRequest);
+            if (!updatedAuthor.isPresent()) {
+                return BaseResponse.BadRequest(null, "Cannot update author", null);
+            }
+            return BaseResponse.Created("Author data is updated", null, updatedAuthor);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BaseResponse.InternalServerError(null, e.getMessage(), null);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> deleteAuthor(@RequestParam(name = "id") String id) {
+        try {
+            if (id == null || id.isEmpty() || id == "") {
+                return BaseResponse.BadRequest(null, "Author ID cannot be empty", null);
+            }
+
+            Optional<Author> deletedAuthor = authorService.deleteAuthor(id);
+            if (!deletedAuthor.isPresent()) {
+                return BaseResponse.BadRequest(null, "Cannot delete author", null);
+            }
+            return BaseResponse.OK("Author is deleted", null, null);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BaseResponse.InternalServerError(null, e.getMessage(), null);
+        }
+    
+    }
     // @GetMapping("/book/{isbn}")
     // public ResponseEntity<List<Author>> getAuthorByISBN(@PathVariable Long isbn){
     //     try {
