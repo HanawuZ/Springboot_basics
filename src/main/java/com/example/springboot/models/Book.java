@@ -19,7 +19,31 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.SqlResultSetMapping;
+import jakarta.persistence.ConstructorResult;
+import jakarta.persistence.ColumnResult;
+import com.example.springboot.models.query.BookQueryResult;
 
+@SqlResultSetMapping(
+    name = "BookQueryResultMapping",
+    classes = @ConstructorResult(
+        targetClass = BookQueryResult.class,
+        columns = {
+            @ColumnResult(name = "id", type = String.class),
+            @ColumnResult(name = "copies_available", type = Integer.class),
+            @ColumnResult(name = "genre", type = String.class),
+            @ColumnResult(name = "isbn", type = String.class),
+            @ColumnResult(name = "title", type = String.class),
+            @ColumnResult(name = "price", type = Double.class),
+            @ColumnResult(name = "publication_year", type = LocalDate.class),
+            @ColumnResult(name = "publisher_id", type = String.class),
+            @ColumnResult(name = "publisher_name", type = String.class),
+            @ColumnResult(name = "author_id", type = String.class),
+            @ColumnResult(name = "author_firstname", type = String.class),
+            @ColumnResult(name = "author_lastname", type = String.class)
+        }
+    )
+)
 @Entity
 @Data
 @Table(name = "books")
@@ -55,10 +79,10 @@ public class Book {
     private LocalDate publicationYear;
 
     @Column(name = "copies_available")
-    private int copiesAvailable;
+    private Integer copiesAvailable;
 
     @Column(name = "price")
-    private double price;
+    private Double price;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -89,7 +113,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String isbn, String title, String genre, LocalDate publicationYear, int copiesAvailable, double price) {
+    public Book(String isbn, String title, String genre, LocalDate publicationYear, Integer copiesAvailable, Double price) {
         this.isbn = isbn;
         this.title = title;
         this.genre = genre;
