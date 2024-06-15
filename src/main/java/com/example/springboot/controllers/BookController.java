@@ -27,45 +27,47 @@ interface IBookController {
 @CrossOrigin
 @RequestMapping("/books")
 @RestController
-public class BookController implements IBookController {
-    private final BookService bookService;
+public class BookController 
+// implements IBookController 
+{
+    // private final BookService bookService;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    // public BookController(BookService bookService) {
+    //     this.bookService = bookService;
+    // }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse> getAllBooks() {
-        try {
-            List<BookResponse> result = bookService.getAllBooks();
-            if (result == null) {
-                return BaseResponse.NotFound("", "No books found", null);
-            }
-            return BaseResponse.OK("Found books", null, result);
+    // @GetMapping
+    // public ResponseEntity<BaseResponse> getAllBooks() {
+    //     try {
+    //         List<BookResponse> result = bookService.getAllBooks();
+    //         if (result == null) {
+    //             return BaseResponse.NotFound("", "No books found", null);
+    //         }
+    //         return BaseResponse.OK("Found books", null, result);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BaseResponse.InternalServerError(null, e.getMessage(), null);
-        }
-    }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return BaseResponse.InternalServerError(null, e.getMessage(), null);
+    //     }
+    // }
 
-    @GetMapping("/by-id")
-    public ResponseEntity<BaseResponse> getBookById(@RequestParam(name = "id") String id) {
-        try {
-            if (id == null || id.isEmpty() || id == "") {
-                return BaseResponse.BadRequest(null, "Book id is required", null);
-            }
+    // @GetMapping("/by-id")
+    // public ResponseEntity<BaseResponse> getBookById(@RequestParam(name = "id") String id) {
+    //     try {
+    //         if (id == null || id.isEmpty() || id == "") {
+    //             return BaseResponse.BadRequest(null, "Book id is required", null);
+    //         }
 
-            BookResponse result = bookService.getBookById(id);
-            if (result == null) {
-                return BaseResponse.NotFound("", "No book found", null);
-            }
+    //         BookResponse result = bookService.getBookById(id);
+    //         if (result == null) {
+    //             return BaseResponse.NotFound("", "No book found", null);
+    //         }
 
-            return BaseResponse.OK("Found book", null, result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BaseResponse.InternalServerError(null, e.getMessage(), null);
-        }
-    }
+    //         return BaseResponse.OK("Found book", null, result);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return BaseResponse.InternalServerError(null, e.getMessage(), null);
+    //     }
+    // }
 
 }

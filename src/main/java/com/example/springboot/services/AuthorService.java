@@ -13,20 +13,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.springboot.constants.DataResultStatusCode;
 import com.example.springboot.models.Author;
 import com.example.springboot.models.requests.AuthorRequest;
 import com.example.springboot.repositories.AuthorRepository;
-
+import com.example.springboot.models.DataResult;
 
 /**
  * InnerAuthorService
  */
 interface IAuthorService {
-    List<Author> getAllAuthors();
-    Optional<Author> getAuthorById(String id);
-    Optional<Author> createAuthor(AuthorRequest authorRequest);
-    Optional<Author> deleteAuthor(String id);
-    Optional<Author> updateAuthor(String id, AuthorRequest authorRequest);
+    DataResult<List<Author>> getAllAuthors();
+    DataResult<Author> getAuthorById(String id);
+    DataResult<Author> createAuthor(AuthorRequest authorRequest);
+    DataResult<Author> deleteAuthor(String id);
+    DataResult<Author> updateAuthor(String id, AuthorRequest authorRequest);
     
 }
 
@@ -38,34 +39,36 @@ public class AuthorService implements IAuthorService{
         this.authorRepository = authorRepository;
     }
 
-    public List<Author> getAllAuthors() {
+    public DataResult<List<Author>> getAllAuthors() {
         try {
             List<Author> authors = authorRepository.findAll();
 
-            if (authors == null) {
-                return null;
+            if (authors == null || authors.isEmpty()) {
+                return new DataResult<List<Author>>(DataResultStatusCode.NOT_FOUND_DATA, null, "No authors found");
             }
-            return authors;
             
+            return new DataResult<List<Author>>(DataResultStatusCode.GET_DATA_SUCCESS, authors, null);
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            return new DataResult<List<Author>>(DataResultStatusCode.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
-    public Optional<Author> getAuthorById(String id) {
+    public DataResult<Author> getAuthorById(String id) {
         try {
             Optional<Author> author = authorRepository.findById(id);
             if (author == null) {
-                return null;
+                return new DataResult<Author>(DataResultStatusCode.NOT_FOUND_DATA, null, "No authors found");
             }
-            return author;
+            return new DataResult<Author>(DataResultStatusCode.GET_DATA_SUCCESS, author.get(), null);
             
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            return new DataResult<Author>(DataResultStatusCode.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
-    public Optional<Author> createAuthor(AuthorRequest authorRequest){
+    public DataResult<Author> createAuthor(AuthorRequest authorRequest){
         try {
             Author author = new Author();
             author.setId(UUID.randomUUID().toString());
@@ -79,17 +82,18 @@ public class AuthorService implements IAuthorService{
 
             boolean isComplete = authorRepository.createAuthors(List.of(author));
             if (!isComplete) {
-                return Optional.empty();
+                return new DataResult<Author>(DataResultStatusCode.CREATE_DATA_FAILED, null, "Unable to create author");
             }
 
-            return Optional.of(author);
+            return new DataResult<Author>(DataResultStatusCode.CREATE_DATA_SUCCESS, author, null);
 
         } catch (Exception e) {
-            return Optional.empty();
+            e.printStackTrace();
+            return new DataResult<Author>(DataResultStatusCode.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
-    public Optional<Author> updateAuthor(String id, AuthorRequest authorRequest) {
+    public DataResult<Author> updateAuthor(String id, AuthorRequest authorRequest) {
         try {
             Author author = new Author();
             author.setFirstname(authorRequest.getFirstname());
@@ -100,28 +104,28 @@ public class AuthorService implements IAuthorService{
 
             boolean isComplete = authorRepository.updateAuthor(id, author);
             if (!isComplete) {
-                return Optional.empty();
+                return new DataResult<Author>(DataResultStatusCode.UPDATE_DATA_FAILED, null, "Unable to update author");
             }
-            return Optional.of(author);
+            return new DataResult<Author>(DataResultStatusCode.UPDATE_DATA_SUCCESS, author, null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return new DataResult<Author>(DataResultStatusCode.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 
 
-    public Optional<Author> deleteAuthor(String id) {
+    public DataResult<Author> deleteAuthor(String id) {
         try {
             boolean isComplete = authorRepository.deleteAuthor(id);
             if (!isComplete) {
-                return Optional.empty();
+                return new DataResult<Author>(DataResultStatusCode.DELETE_DATA_FAILED, null, "Unable to delete author");
             }   
 
-            return Optional.of(new Author());
+            return new DataResult<Author>(DataResultStatusCode.DELETE_DATA_SUCCESS, null, null);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return new DataResult<Author>(DataResultStatusCode.INTERNAL_SERVER_ERROR, null, e.getMessage());
         }
     }
 

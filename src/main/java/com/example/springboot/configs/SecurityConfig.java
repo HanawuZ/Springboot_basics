@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.springboot.auth.JwtAuthFilter;
+import com.example.springboot.exception.GeneralErrorExcpetion;
 import com.example.springboot.services.UserService;
 
 @Configuration
@@ -27,7 +28,6 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter authFilter;
 
-    // User Creation
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserService();
@@ -40,18 +40,22 @@ public class SecurityConfig {
      * @param http the HttpSecurity object to configure
      * @return the SecurityFilterChain object representing the configured filter
      *         chain
-     * @throws Exception if an error occurs during the configuration process
+     * @throws GeneralErrorExcpetion if an error occurs during the configuration process
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        return http.csrf(csrf -> csrf.disable())
-                // .authorizeHttpRequests(auth -> auth.requestMatchers("/").permitAll())
-                // .authorizeHttpRequests(auth -> auth.requestMatchers("/authors/**").permitAll())
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws GeneralErrorExcpetion {
+        try {
+            return http.csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/").permitAll())
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/users/signin").permitAll())
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/authors/**").authenticated())
+                    .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authenticationProvider(authenticationProvider())
+                    .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                    .build();
+        } catch (Exception e) {
+            throw new GeneralErrorExcpetion(e.getMessage());
+        }
     }
 
     // Password Encoding

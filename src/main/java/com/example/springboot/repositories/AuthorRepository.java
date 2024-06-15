@@ -1,5 +1,6 @@
 package com.example.springboot.repositories;
 
+import com.example.springboot.exception.DatabaseErrorException;
 import com.example.springboot.models.Author;
 
 import jakarta.persistence.EntityManager;
@@ -30,11 +31,11 @@ interface IAuthorRepository {
 @Repository
 public class AuthorRepository implements IAuthorRepository {
 
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Autowired
     public AuthorRepository(EntityManagerFactory entityManagerFactory) {
-        this.em = entityManagerFactory.createEntityManager();
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AuthorRepository implements IAuthorRepository {
         try {
             final String queryString = "SELECT * FROM authors";
     
-            Query query = em.createNativeQuery(queryString, Author.class);
+            Query query = entityManager.createNativeQuery(queryString, Author.class);
     
             // Get result query
             List<Author> result = query.getResultList();
@@ -53,7 +54,7 @@ public class AuthorRepository implements IAuthorRepository {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new DatabaseErrorException(e.getMessage());
         }
     }
 
@@ -62,7 +63,7 @@ public class AuthorRepository implements IAuthorRepository {
         try {
             final String queryString = String.format("SELECT * FROM authors WHERE id = %s", id);
     
-            Query query = em.createNativeQuery(queryString, Author.class);
+            Query query = entityManager.createNativeQuery(queryString, Author.class);
     
             // Get result query
             List<Author> results = query.getResultList();
@@ -73,7 +74,7 @@ public class AuthorRepository implements IAuthorRepository {
             return Optional.of(results.get(0));
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            throw new DatabaseErrorException(e.getMessage());
         }
     }
 
@@ -81,12 +82,12 @@ public class AuthorRepository implements IAuthorRepository {
     @Transactional
     public boolean createAuthors(List<Author> author) {
         try {
-            EntityTransaction transaction = em.getTransaction();
+            EntityTransaction transaction = entityManager.getTransaction();
 
             transaction.begin();
 
             for (Author a : author) {
-                em.persist(a);
+                entityManager.persist(a);
             }
 
             transaction.commit();
@@ -94,7 +95,7 @@ public class AuthorRepository implements IAuthorRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw new DatabaseErrorException(e.getMessage());
         }
     }
 
@@ -103,18 +104,18 @@ public class AuthorRepository implements IAuthorRepository {
     @Modifying
     public boolean updateAuthor(String id, Author author) {
         try {
-            Author foundAuthor = em.find(Author.class, id);
+            Author foundAuthor = entityManager.find(Author.class, id);
             if (foundAuthor == null) {
                 return false;
             }
             final String queryString = "UPDATE authors SET name = :name, dob = :dob, updated_by = :updatedBy, updated_date = :updatedDate WHERE id = :id";
 
             // Begin transaction
-            EntityTransaction transaction = em.getTransaction();
+            EntityTransaction transaction = entityManager.getTransaction();
 
             transaction.begin();
             
-            Query query = em.createNativeQuery(queryString, Author.class);
+            Query query = entityManager.createNativeQuery(queryString, Author.class);
             
             query.setParameter("name", author.getFirstname());
             query.setParameter("dob", author.getDob());
@@ -128,17 +129,17 @@ public class AuthorRepository implements IAuthorRepository {
 
         } catch(Exception e) {
             e.printStackTrace();
-            return false;
+            throw new DatabaseErrorException(e.getMessage());
         }
     }
 
     public boolean deleteAuthor(String id) {
         try {
-            EntityTransaction transaction = em.getTransaction();
+            EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
-            Author author = em.find(Author.class, id);
-            em.remove(author);
+            Author author = entityManager.find(Author.class, id);
+            entityManager.remove(author);
 
             transaction.commit();
 
@@ -146,9 +147,7 @@ public class AuthorRepository implements IAuthorRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw new DatabaseErrorException(e.getMessage());
         }
     }
-
-
 }
